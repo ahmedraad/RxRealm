@@ -1,0 +1,36 @@
+source "https://cdn.cocoapods.org/"
+project "RxRealmDemo.xcodeproj"
+use_frameworks!
+
+def common
+  pod "RxRealm", :path => "../"
+end
+
+def common_tests
+  pod "RxBlocking", "~> 6.0"
+end
+
+target "RxRealmDemo-iOS" do
+  platform :ios, "12.0"
+  common
+end
+
+# target "RxRealmDemo-macOS" do
+#   platform :osx, "10.12"
+#   common
+# end
+
+# target "RxRealmDemo-tvOS" do
+#   platform :tvos, "9.0"
+#   common
+# end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      if Gem::Version.new('12.0') > Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      end
+    end
+  end
+end
